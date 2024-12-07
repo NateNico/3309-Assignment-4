@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { UserAuth } from '../context/AuthContext';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 const ManageCategories = () => {
   const { user } = UserAuth();
   const [categories, setCategories] = useState([]);
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [editCategoryId, setEditCategoryId] = useState(null);
-  const [editCategoryName, setEditCategoryName] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  // Updated fetchCategories function with error handling
   const fetchCategories = async () => {
     if (!user) return;
-    const res = await fetch(`/api/categories/user/${user.uid}`);
-    const data = await res.json();
-    setCategories(data);
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/categories/user/${user.uid}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      const data = await res.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+    setLoading(false);
   };
 
+  // Fetch categories when the component mounts or when the user changes
   useEffect(() => {
     fetchCategories();
   }, [user]);
@@ -22,12 +34,16 @@ const ManageCategories = () => {
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!user || !newCategoryName.trim()) return;
+
+    setLoading(true);
     const res = await fetch('/api/categories/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.uid, name: newCategoryName }),
     });
     const data = await res.json();
+    setLoading(false);
+
     if (data.success) {
       setNewCategoryName('');
       fetchCategories();
@@ -36,92 +52,48 @@ const ManageCategories = () => {
     }
   };
 
-  const handleEditCategory = async (categoryId) => {
-    setEditCategoryId(categoryId);
-    const category = categories.find((c) => c.id === categoryId);
-    if (category) setEditCategoryName(category.name);
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editCategoryName.trim()) return;
-    const res = await fetch('/api/categories/edit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        userId: user.uid, 
-        categoryId: editCategoryId, 
-        name: editCategoryName 
-      }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      setEditCategoryId(null);
-      setEditCategoryName('');
-      fetchCategories();
-    } else {
-      alert('Error editing category.');
-    }
-  };
-
-  const handleDeleteCategory = async (categoryId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this category?');
-    if (!confirmDelete) return;
-
-    const res = await fetch('/api/categories/delete', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.uid, categoryId }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      fetchCategories();
-    } else {
-      alert('Error deleting category.');
-    }
-  };
-
   return (
-    <div>
-      <h2>Manage Categories</h2>
-      <form onSubmit={handleAddCategory}>
-        <input
-          type="text"
-          placeholder="New Category Name"
-          value={newCategoryName}
-          onChange={(e) => setNewCategoryName(e.target.value)}
-          required
-        />
-        <button type="submit">Add Category</button>
-      </form>
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
 
-      <h3>Your Categories:</h3>
-      <ul>
-        {categories.map((cat) => (
-          <li key={cat.id}>
-            {editCategoryId === cat.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editCategoryName}
-                  onChange={(e) => setEditCategoryName(e.target.value)}
-                />
-                <button onClick={handleSaveEdit}>Save</button>
-                <button onClick={() => setEditCategoryId(null)}>Cancel</button>
-              </>
-            ) : (
-              <>
-                {cat.name}{' '}
-                <button onClick={() => handleEditCategory(cat.id)}>Edit</button>{' '}
-                <button onClick={() => handleDeleteCategory(cat.id)}>Delete</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      {/* Main Content */}
+      <div className="w-3/4 p-6">
+        <Header />
+        <div className="mt-6">
+          <h3 className="text-2xl font-bold">Manage Categories</h3>
+          <form onSubmit={handleAddCategory}>
+            <input
+              type="text"
+              placeholder="New Category Name"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={loading}>
+              {loading ? 'Adding...' : 'Add Category'}
+            </button>
+          </form>
+
+          <h3>Your Categories:</h3>
+          {loading ? <p>Loading...</p> : null}
+          <ul>
+            {categories.map((cat) => (
+              <li key={cat.id}>
+                {cat.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default ManageCategories;
+
+
+
+
 
 

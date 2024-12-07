@@ -7,7 +7,7 @@ const Account = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await logout(); // Logging out the user
       console.log('You are logged out');
     } catch (e) {
       console.log(e.message);
@@ -15,24 +15,57 @@ const Account = () => {
   };
 
   return (
-    <div className='max-w-[600px] mx-auto my-16 p-4'>
-      <h1 className='text-2xl font-bold py-4'>Account</h1>
-      <p>User Email: {user && user.email}</p>
-      <button
-        onClick={handleLogout}
-        className='border px-6 py-2 my-4'>
-        Logout
-      </button>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-800 text-white flex flex-col">
+        <div className="p-4 text-2xl font-bold border-b border-gray-700">
+          Expense Tracker
+        </div>
+        <nav className="flex-1">
+          <ul className="mt-4 space-y-2">
+            <li className="p-2 hover:bg-gray-700">
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+            <li className="p-2 hover:bg-gray-700">
+              <Link to="/add-expense">Add Expense</Link>
+            </li>
+            <li className="p-2 hover:bg-gray-700">
+              <Link to="/expense-report">Expense Report</Link>
+            </li>
+            <li className="p-2 hover:bg-gray-700">
+              <Link to="/manage-categories">Manage Categories</Link>
+            </li>
+            <li className="p-2 hover:bg-gray-700">
+              <Link to="/search-expenses">Search Expenses</Link>
+            </li>
+          </ul>
+        </nav>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white py-2 px-4 m-4 rounded hover:bg-red-600">
+          Logout
+        </button>
+      </div>
 
-      <div className='mt-6'>
-        <h2 className='text-xl font-bold mb-4'>Navigate:</h2>
-        <ul className='list-disc pl-5'>
-          <li><Link to='/add-expense'>Add Expense</Link></li>
-          <li><Link to='/expense-report'>View Expense Report</Link></li>
-          <li><Link to='/manage-categories'>Manage Categories</Link></li>
-          <li><Link to='/search-expenses'>Search Expenses</Link></li>
-          <li><Link to='/spending-analysis'>Spending Analysis</Link></li>
-        </ul>
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        <header className="bg-white shadow p-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-800">Account</h1>
+          <div className="flex items-center space-x-4">
+            <div className="text-gray-700">{user && user.email}</div>
+            <img
+              src="/Account Icon.png" // Make sure this image is placed in the public folder
+              alt="User Profile"
+              className="w-10 h-10 rounded-full"
+            />
+          </div>
+        </header>
+
+        {/* Content for the Account Page */}
+        <div className="mt-8 bg-white shadow rounded p-6">
+          <h3 className="text-xl font-semibold">Welcome to your account page!</h3>
+          <p className="mt-4 text-gray-700">You can manage your expenses here.</p>
+        </div>
       </div>
     </div>
   );

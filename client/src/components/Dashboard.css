@@ -1,0 +1,33 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .main-content {
+    width: 75%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    margin-left: 250px; /* Sidebar width */
+    z-index: 1;
+  }
+  
+  .content {
+    padding-top: 50px;
+  }
+  
+  .dashboard-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .dashboard-description {
+    font-size: 1.2rem;
+  }
+  .dashboard-container {
+    background-image: url('/dashboard.jpg'); /* Path relative to the public folder */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserAuth } from '../context/AuthContext';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 const SearchExpenses = () => {
   const { user } = UserAuth();
@@ -9,10 +11,13 @@ const SearchExpenses = () => {
   const [minAmount, setMinAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!user) return;
+
+    setLoading(true);
     const res = await fetch('/api/expenses/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,62 +27,74 @@ const SearchExpenses = () => {
         startDate,
         endDate,
         minAmount,
-        maxAmount
+        maxAmount,
       }),
     });
     const data = await res.json();
+    setLoading(false);
     setResults(data);
   };
 
   return (
-    <div>
-      <h2>Search Expenses</h2>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
-        <label>Start Date: </label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <label>End Date: </label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <label>Min Amount: </label>
-        <input
-          type="number"
-          value={minAmount}
-          onChange={(e) => setMinAmount(e.target.value)}
-        />
-        <label>Max Amount: </label>
-        <input
-          type="number"
-          value={maxAmount}
-          onChange={(e) => setMaxAmount(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
 
-      <h3>Search Results:</h3>
-      {results.length > 0 ? (
-        <ul>
-          {results.map((exp) => (
-            <li key={exp.id}>
-              {exp.date.toDate ? exp.date.toDate().toDateString() : new Date(exp.date.seconds * 1000).toDateString()} - {exp.category}: ${exp.amount} ({exp.description})
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No results found.</p>
-      )}
+      {/* Main Content */}
+      <div className="w-3/4 p-6">
+        <Header />
+        <div className="mt-6">
+          <h3 className="text-2xl font-bold"> </h3>
+          <form onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+            <label> Start Date </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <label> End Date </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <label> Min Amount </label>
+            <input
+              type="number"
+              value={minAmount}
+              onChange={(e) => setMinAmount(e.target.value)}
+            />
+            <label> Max Amount </label>
+            <input
+              type="number"
+              value={maxAmount}
+              onChange={(e) => setMaxAmount(e.target.value)}
+            />
+            <button type="submit" disabled={loading}>
+              {loading ? 'Searching...' : 'Search Results'}
+            </button>
+          </form>
+
+          <h3> </h3>
+          {results.length > 0 ? (
+            <ul>
+              {results.map((exp) => (
+                <li key={exp.id}>
+                  {new Date(exp.date).toLocaleDateString()} - {exp.category}: ${exp.amount} ({exp.description})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No results found.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

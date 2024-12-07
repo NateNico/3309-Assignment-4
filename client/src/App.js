@@ -1,13 +1,15 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { AuthContextProvider } from './context/AuthContext';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AuthContextProvider } from './context/AuthContext'; // Import context provider
 
+// Import your components
 import Signin from './components/Signin';
 import Signup from './components/Signup';
 import Account from './components/Account';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// New Components
+// New Components for your Dashboard and other functionalities
+import Dashboard from './components/Dashboard';
 import AddExpense from './components/AddExpense';
 import ExpenseReport from './components/ExpenseReport';
 import ManageCategories from './components/ManageCategories';
@@ -15,20 +17,26 @@ import SearchExpenses from './components/SearchExpenses';
 import SpendingAnalysis from './components/SpendingAnalysis';
 
 function App() {
+  const location = useLocation();
+  
   return (
-    <div>
-      <h1 className='text-center text-3xl font-bold'>
-        Expense Tracker Web
-      </h1>
-      <AuthContextProvider>
+    <AuthContextProvider>
+      <div className="bg-background min-h-screen text-textColor font-sans">
+        {/* Conditionally render the title */}
+        {location.pathname !== '/dashboard' && (
+          <h1 className="text-center text-4xl font-bold text-primary py-8">
+            Expense Tracker Web
+          </h1>
+        )}
+
         <Routes>
           {/* Public Routes */}
-          <Route path='/' element={<Signin />} />
-          <Route path='/signup' element={<Signup />} />
+          <Route path="/" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
 
           {/* Protected Routes */}
           <Route
-            path='/account'
+            path="/account"
             element={
               <ProtectedRoute>
                 <Account />
@@ -36,7 +44,15 @@ function App() {
             }
           />
           <Route
-            path='/add-expense'
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-expense"
             element={
               <ProtectedRoute>
                 <AddExpense />
@@ -44,7 +60,7 @@ function App() {
             }
           />
           <Route
-            path='/expense-report'
+            path="/expense-report"
             element={
               <ProtectedRoute>
                 <ExpenseReport />
@@ -52,7 +68,7 @@ function App() {
             }
           />
           <Route
-            path='/manage-categories'
+            path="/manage-categories"
             element={
               <ProtectedRoute>
                 <ManageCategories />
@@ -60,7 +76,7 @@ function App() {
             }
           />
           <Route
-            path='/search-expenses'
+            path="/search-expenses"
             element={
               <ProtectedRoute>
                 <SearchExpenses />
@@ -68,7 +84,7 @@ function App() {
             }
           />
           <Route
-            path='/spending-analysis'
+            path="/spending-analysis"
             element={
               <ProtectedRoute>
                 <SpendingAnalysis />
@@ -76,9 +92,12 @@ function App() {
             }
           />
         </Routes>
-      </AuthContextProvider>
-    </div>
+      </div>
+    </AuthContextProvider>
   );
 }
 
 export default App;
+
+
+
