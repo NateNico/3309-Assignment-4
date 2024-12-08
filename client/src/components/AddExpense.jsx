@@ -19,43 +19,51 @@ function AddExpense() {
     }
 
     setLoading(true);
-    const response = await fetch('/api/expenses/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: user.uid,
-        amount,
-        category,
-        date,
-        description,
-      }),
-    });
-    const data = await response.json();
-    setLoading(false);
 
-    if (data.success) {
-      alert('Expense added successfully!');
-      setAmount('');
-      setCategory('');
-      setDate('');
-      setDescription('');
-    } else {
-      alert('Error adding expense: ' + data.error);
+    try {
+      const response = await fetch('http://localhost:5000/api/expenses/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          amount,
+          category,
+          date,
+          description,
+        }),
+      });
+
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (data.success) {
+          alert('Expense added successfully!');
+          setAmount('');
+          setCategory('');
+          setDate('');
+          setDescription('');
+        } else {
+          alert('Error adding expense: ' + data.error);
+        }
+      } else {
+        console.error('Non-JSON response:', await response.text());
+        alert('An error occurred while processing your request.');
+      }
+    } catch (error) {
+      console.error('Error in submit:', error);
+      alert('Error submitting expense: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <div className="w-3/4 p-6">
         <Header />
         <div className="mt-6">
-          <h3 className="text-2xl font-bold"> </h3>
-          
-          {/* Form for Adding Expense */}
+          <h3 className="text-2xl font-bold">Add Expense</h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <input
@@ -97,7 +105,7 @@ function AddExpense() {
             <button
               type="submit"
               disabled={loading}
-              className="p-2 bg-blue-500 text-purple rounded disabled:bg-gray-400"
+              className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
             >
               {loading ? 'Submitting...' : 'Add Expense'}
             </button>
@@ -109,5 +117,4 @@ function AddExpense() {
 }
 
 export default AddExpense;
-
 

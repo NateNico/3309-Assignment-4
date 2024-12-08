@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext'; // Import context provider
 
@@ -18,15 +18,35 @@ import SpendingAnalysis from './components/SpendingAnalysis';
 
 function App() {
   const location = useLocation();
-  
+  const [showEmail, setShowEmail] = useState(false);
+
+  const handleIconClick = () => {
+    setShowEmail((prev) => !prev);
+  };
+
   return (
     <AuthContextProvider>
       <div className="bg-background min-h-screen text-textColor font-sans">
-        {/* Conditionally render the title */}
+        {/* Conditionally render the title and account icon bar */}
         {location.pathname !== '/dashboard' && (
-          <h1 className="text-center text-4xl font-bold text-primary py-8">
-            Expense Tracker Web
-          </h1>
+          <div className="flex justify-between items-center p-4 bg-gray-100">
+            {/* Title on the left (unchanged classes and text) */}
+            <h1 className="title">Expense Tracker Web</h1>
+
+            {/* Only show the account icon if the user is NOT on the login or signup page */}
+            {/* This means it won't show on '/', '/signup' pages and will appear on other routes (after login) */}
+            {location.pathname !== '/' && location.pathname !== '/signup' && (
+              <div>
+                <img
+                  src="/Account Icon.png"
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full cursor-pointer mr-2"
+                  onClick={handleIconClick}
+                />
+                {showEmail && <span className="text-black">User Email</span>}
+              </div>
+            )}
+          </div>
         )}
 
         <Routes>
@@ -98,6 +118,5 @@ function App() {
 }
 
 export default App;
-
 
 

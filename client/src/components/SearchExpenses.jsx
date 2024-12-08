@@ -18,7 +18,8 @@ const SearchExpenses = () => {
     if (!user) return;
 
     setLoading(true);
-    const res = await fetch('/api/expenses/search', {
+    // Updated the fetch URL to include http://localhost:5000
+    const res = await fetch('http://localhost:5000/api/expenses/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -30,6 +31,7 @@ const SearchExpenses = () => {
         maxAmount,
       }),
     });
+
     const data = await res.json();
     setLoading(false);
     setResults(data);
@@ -37,14 +39,11 @@ const SearchExpenses = () => {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <div className="w-3/4 p-6">
         <Header />
         <div className="mt-6">
-          <h3 className="text-2xl font-bold"> </h3>
+          <h3 className="text-2xl font-bold">Search Expenses</h3>
           <form onSubmit={handleSearch}>
             <input
               type="text"
@@ -81,7 +80,7 @@ const SearchExpenses = () => {
             </button>
           </form>
 
-          <h3> </h3>
+          <h3>Results:</h3>
           {results.length > 0 ? (
             <ul>
               {results.map((exp) => (
@@ -100,3 +99,5 @@ const SearchExpenses = () => {
 };
 
 export default SearchExpenses;
+
+

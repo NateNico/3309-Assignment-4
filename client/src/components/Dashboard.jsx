@@ -1,6 +1,5 @@
 import React from 'react';
 import Sidebar from './Sidebar';
-import Header from './Header';
 
 const Dashboard = () => {
   return (
@@ -10,17 +9,20 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div
-        className="w-3/4 p-6"
+        className="w-3/4"
         style={{
-          backgroundImage: `url(/dashboard.jpg)`, 
+          backgroundImage: `url(/dashboard.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh',
         }}
       >
-        <Header />
-        <div className="mt-6">
-          <h3 className="text-2xl font-bold">Dashboard</h3>
-          {/* Your content for the dashboard */}
+        {/* If you want to add a header or other top elements, do it here */}
+        <div className="mt-6 p-6">
+          {/* Your content for the dashboard goes here */}
+          {/* The p-6 adds spacing but no white lines since no contrasting bg color */}
         </div>
       </div>
     </div>
@@ -28,4 +30,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 

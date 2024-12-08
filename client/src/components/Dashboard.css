@@ -6,7 +6,7 @@
   .main-content {
     width: 75%;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    background: rgba(216, 191, 216, 0.8); 
     margin-left: 250px; /* Sidebar width */
     z-index: 1;
   }

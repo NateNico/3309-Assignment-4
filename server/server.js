@@ -17,7 +17,7 @@ app.use('/api/categories', categoryRoutes);
 app.get('/api/spending-analysis/:userId', async (req, res) => {
   const { userId } = req.params;
   const db = require('./config/db');
-  
+
   try {
     const snapshot = await db.collection('expenses').where('userId', '==', userId).get();
     if (snapshot.empty) {
@@ -34,7 +34,6 @@ app.get('/api/spending-analysis/:userId', async (req, res) => {
       categoryTotals[data.category] += data.amount;
     });
 
-    // Find the category with the highest spending
     let topCategory = null;
     let maxSpent = 0;
     for (const cat in categoryTotals) {
@@ -59,5 +58,7 @@ app.get('/api/spending-analysis/:userId', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
 
 

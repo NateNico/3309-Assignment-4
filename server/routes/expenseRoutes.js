@@ -12,10 +12,10 @@ router.post('/add', async (req, res) => {
 
   try {
     const expense = {
-      userId,
+      userId: userId,
       amount: parseFloat(amount),
-      category,
-      date: new Date(date),
+      category: category.trim(),
+      date: new Date(date), // Convert user input to Date
       description: description || '',
     };
     const docRef = await db.collection('expenses').add(expense);
@@ -31,7 +31,13 @@ router.get('/user/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
     const snapshot = await db.collection('expenses').where('userId', '==', userId).get();
-    const expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const expenses = snapshot.docs.map(doc => {
+      const data = doc.data();
+      if (data.date && data.date.toDate) {
+        data.date = data.date.toDate(); // Convert Firestore Timestamp to Date
+      }
+      return { id: doc.id, ...data };
+    });
     res.json(expenses);
   } catch (error) {
     console.error('Error fetching expenses:', error);
@@ -39,32 +45,38 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// Search expenses by category, date range, and amount range
+// Search expenses
 router.post('/search', async (req, res) => {
   const { userId, category, startDate, endDate, minAmount, maxAmount } = req.body;
-  let query = db.collection('expenses').where('userId', '==', userId);
-
-  // Filter by category if provided
-  if (category && category.trim() !== '') {
-    query = query.where('category', '==', category);
-  }
-
-  // Since Firestore queries are limited in combining multiple inequalities on different fields,
-  // we'll do the date range filtering with queries and amount filtering in-memory.
-  if (startDate) {
-    const start = new Date(startDate);
-    query = query.where('date', '>=', start);
-  }
-  if (endDate) {
-    const end = new Date(endDate);
-    query = query.where('date', '<=', end);
-  }
-
   try {
-    const snapshot = await query.get();
-    let results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    let query = db.collection('expenses').where('userId', '==', userId);
 
-    // In-memory filtering for amount
+    if (category && category.trim() !== '') {
+      query = query.where('category', '==', category.trim());
+    }
+
+    if (startDate) {
+      const start = new Date(startDate);
+      if (!isNaN(start)) {
+        query = query.where('date', '>=', start);
+      }
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      if (!isNaN(end)) {
+        query = query.where('date', '<=', end);
+      }
+    }
+
+    const snapshot = await query.get();
+    let results = snapshot.docs.map(doc => {
+      const data = doc.data();
+      if (data.date && data.date.toDate) {
+        data.date = data.date.toDate();
+      }
+      return { id: doc.id, ...data };
+    });
+
     if (minAmount) {
       results = results.filter(exp => exp.amount >= parseFloat(minAmount));
     }
@@ -79,32 +91,37 @@ router.post('/search', async (req, res) => {
   }
 });
 
-// Generate expense reports (by category or by month)
-router.get('/report/:userId/:type', async (req, res) => {
-  const { userId, type } = req.params;
+// Expense report (no month filtering, just show all expenses by category)
+router.get('/report/:userId', async (req, res) => {
+  const { userId } = req.params;
   try {
     const snapshot = await db.collection('expenses').where('userId', '==', userId).get();
-    const expenses = snapshot.docs.map(doc => doc.data());
-
-    let report = {};
-
-    if (type === 'category') {
-      expenses.forEach(exp => {
-        if (!report[exp.category]) report[exp.category] = 0;
-        report[exp.category] += exp.amount;
-      });
-    } else if (type === 'month') {
-      // Group by Month (YYYY-MM)
-      expenses.forEach(exp => {
-        const month = exp.date.toISOString().substring(0, 7);
-        if (!report[month]) report[month] = 0;
-        report[month] += exp.amount;
-      });
-    } else {
-      return res.status(400).json({ error: 'Invalid report type. Use "category" or "month".' });
+    if (snapshot.empty) {
+      return res.json([]);
     }
 
-    res.json(report);
+    const categoryTotals = {};
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.date && data.date.toDate) {
+        data.date = data.date.toDate();
+      }
+
+      // Sum up all expenses by category
+      if (!categoryTotals[data.category]) {
+        categoryTotals[data.category] = 0;
+      }
+      categoryTotals[data.category] += data.amount;
+    });
+
+    // Convert to array
+    const reportArray = Object.keys(categoryTotals).map(cat => ({
+      name: cat,
+      total: categoryTotals[cat]
+    }));
+
+    res.json(reportArray);
   } catch (error) {
     console.error('Error generating report:', error);
     res.status(500).json({ error: 'Failed to generate report' });
@@ -112,5 +129,4 @@ router.get('/report/:userId/:type', async (req, res) => {
 });
 
 module.exports = router;
-
 

@@ -34,3 +34,6 @@ const SpendingAnalysis = () => {
 };
 
 export default SpendingAnalysis;
+
+
+

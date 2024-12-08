@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* client/src/index.css */
+.title {
+    text-align: center; 
+    margin: 0 auto;
+    font-size: 32px; 
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  

@@ -1,7 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { UserAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
+  const { logout } = UserAuth(); // Ensure you have access to logout from context
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      console.log('You are logged out');
+    } catch (e) {
+      console.log('Error logging out:', e.message);
+    }
+  };
+
   return (
     <div className="w-1/4 bg-gray-800 text-white h-screen flex flex-col">
       <div className="py-6 px-4">
@@ -16,10 +28,10 @@ const Sidebar = () => {
           </ul>
         </nav>
       </div>
-      
+
       {/* Logout Button placed at the bottom */}
       <div className="mt-auto py-4">
-        <button className="bg-red-500 text-white py-2 px-4 w-48 mx-auto hover:bg-red-600">
+        <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 w-48 mx-auto hover:bg-red-600">
           Logout
         </button>
       </div>
@@ -28,5 +40,6 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
 
 
