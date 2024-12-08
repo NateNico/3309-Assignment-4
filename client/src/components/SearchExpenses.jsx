@@ -51,36 +51,12 @@ const SearchExpenses = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             />
-            <label> Start Date </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <label> End Date </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            <label> Min Amount </label>
-            <input
-              type="number"
-              value={minAmount}
-              onChange={(e) => setMinAmount(e.target.value)}
-            />
-            <label> Max Amount </label>
-            <input
-              type="number"
-              value={maxAmount}
-              onChange={(e) => setMaxAmount(e.target.value)}
-            />
-            <button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading} style={{ padding: '5px 10px', background: '#4CAF50', color: '#fff', border: 'none', borderRadius: '5px' }}>
               {loading ? 'Searching...' : 'Search Results'}
             </button>
           </form>
 
-          <h3>Results:</h3>
+          <h2 className="text-2xl font-bold"> Results: </h2>
           {results.length > 0 ? (
             <ul>
               {results.map((exp) => (

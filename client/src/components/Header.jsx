@@ -10,7 +10,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex justify-between items-center p-4 bg-gray-100">
+    <div className="flex justify-between items-center p-4 bg-white-100">
       {/* Both the title and the account icon have been removed */}
     </div>
   );

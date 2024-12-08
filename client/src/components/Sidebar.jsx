@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
-  const { logout } = UserAuth(); // Ensure you have access to logout from context
+  const { logout } = UserAuth(); 
 
   const handleLogout = async () => {
     try {

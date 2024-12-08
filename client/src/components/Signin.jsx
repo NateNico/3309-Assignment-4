@@ -14,48 +14,58 @@ const Signin = () => {
     setError('');
     try {
       await signIn(email, password);
-      navigate('/dashboard'); // Redirect to dashboard after successful login
-    } catch (e) {
-      setError(e.message);
-      console.log(e.message);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+      console.log(err.message);
     }
   };
 
   return (
-    <div className="max-w-[700px] mx-auto my-16 p-4">
-      <div>
-        <h1 className="text-2xl font-bold py-2">Sign in to your account</h1>
-        <p className="py-2">
+    <div
+      className="h-screen flex items-center justify-center"
+      style={{
+        backgroundImage: `url('/75ez.gif')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="bg-white bg-opacity-90 p-6 rounded shadow-lg max-w-md w-full">
+        <h1 className="text-2xl font-bold mb-4">Sign in to your account</h1>
+        <p className="mb-4">
           Don't have an account yet?{' '}
-          <Link to="/signup" className="underline">
+          <Link to="/signup" className="underline text-green-600 hover:text-purple-800">
             Sign up.
           </Link>
         </p>
+
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-left font-medium mb-1">Email Address</label>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-2 border rounded"
+              type="email"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-left font-medium mb-1">Password</label>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border rounded"
+              type="password"
+              required
+            />
+          </div>
+          <button className="w-full p-2 bg-green-600 text-white rounded font-bold hover:bg-red-500 transition">
+            Sign In
+          </button>
+        </form>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col py-2">
-          <label className="py-2 font-medium">Email Address</label>
-          <input 
-            onChange={(e) => setEmail(e.target.value)} 
-            className="border p-3" 
-            type="email" 
-            required
-          />
-        </div>
-        <div className="flex flex-col py-2">
-          <label className="py-2 font-medium">Password</label>
-          <input 
-            onChange={(e) => setPassword(e.target.value)} 
-            className="border p-3" 
-            type="password" 
-            required
-          />
-        </div>
-        <button className="border border-blue-500 bg-blue-600 hover:bg-blue-500 w-full p-4 my-2 text-white">
-          Sign In
-        </button>
-      </form>
     </div>
   );
 };

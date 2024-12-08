@@ -85,12 +85,12 @@ const ManageCategories = () => {
               required
               style={{ marginRight: '10px', padding: '5px', borderRadius: '4px' }}
             />
-            <button type="submit" disabled={loading} style={{ padding: '5px 10px', background: '#4CAF50', color: '#fff', border: 'none', borderRadius: '5px' }}>
+            <button type="submit" disabled={loading} style={{ padding: '5px 10px', background: '#4CAF50', color: '#fff', border: 'none', borderRadius: '5px'}}>
               {loading ? 'Adding...' : 'Add Category'}
             </button>
           </form>
 
-          <h3>Your Categories:</h3>
+          <h2 className="text-2xl font-bold"> Categories: </h2>
           {loading ? <p>Loading...</p> : null}
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {categories.map((cat) => (

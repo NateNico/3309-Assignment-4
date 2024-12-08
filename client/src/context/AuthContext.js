@@ -17,7 +17,7 @@ export const AuthContextProvider = ({ children }) => {
       return await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error('Error creating user:', error.message);
-      throw error; // Re-throw the error so the calling component can handle it.
+      throw error; 
     }
   };
 
@@ -26,7 +26,7 @@ export const AuthContextProvider = ({ children }) => {
       return await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error('Error signing in:', error.message);
-      throw error; // Re-throw the error so the calling component can handle it.
+      throw error; 
     }
   };
 
@@ -35,7 +35,6 @@ export const AuthContextProvider = ({ children }) => {
       await signOut(auth);
     } catch (error) {
       console.error('Error signing out:', error.message);
-      // You can choose to re-throw or handle this error as well.
     }
   };
 

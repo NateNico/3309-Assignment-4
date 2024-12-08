@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { AuthContextProvider } from './context/AuthContext'; // Import context provider
+import { AuthContextProvider } from './context/AuthContext'; 
 
 // Import your components
 import Signin from './components/Signin';
@@ -31,7 +31,7 @@ function App() {
         {location.pathname !== '/dashboard' && (
           <div className="flex justify-between items-center p-4 bg-gray-100">
             {/* Title on the left (unchanged classes and text) */}
-            <h1 className="title">Expense Tracker Web</h1>
+            <h1 className="title">Expense Tracker</h1>
 
             {/* Only show the account icon if the user is NOT on the login or signup page */}
             {/* This means it won't show on '/', '/signup' pages and will appear on other routes (after login) */}
@@ -43,7 +43,6 @@ function App() {
                   className="w-10 h-10 rounded-full cursor-pointer mr-2"
                   onClick={handleIconClick}
                 />
-                {showEmail && <span className="text-black">User Email</span>}
               </div>
             )}
           </div>

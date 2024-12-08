@@ -6,7 +6,6 @@ import Header from './Header';
 const MainLayout = () => {
   const location = useLocation();
 
-  // Set the title dynamically based on the path
   const pageTitle = () => {
     switch(location.pathname) {
         case '/Dashboard':

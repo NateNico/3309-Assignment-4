@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#1E293B', // Example custom color
+        primary: '#1E293B', 
         secondary: '#0EA5E9',
         background: '#F1F5F9',
         textColor: '#111827',
@@ -11,7 +11,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'), // Ensure this is added
+    require('@tailwindcss/forms'), 
   ],
 };
 

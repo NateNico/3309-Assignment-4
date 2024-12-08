@@ -27,7 +27,7 @@ const Account = () => {
           <div className="flex items-center space-x-4">
             <div className="text-gray-700">{user && user.email}</div>
             <img
-              src="/profile-pic.jpg" // Update this to the path of your image
+              src="/profile-pic.jpg" 
               alt="User Profile"
               className="w-10 h-10 rounded-full"
             />
